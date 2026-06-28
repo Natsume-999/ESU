@@ -39,7 +39,7 @@ handle-network-listener:
 # ========================================
 # 配方管理模块 (MMOItems 版)
 # 清除原版配方，注册 MMOItems 物品的"图鉴配方"。
-# 配方仅用于配方书展示与点击触发动作，不可实际合成。
+# 配方仅用于配方书展示，不可实际合成、点击不触发动作。
 # 物品用 "类型:ID" 格式 (如 SWORD:CUTLASS、MATERIAL:TOKEN)。
 # 配方命名空间: esu:物品id (全小写)
 # 依赖: MMOItems
@@ -53,19 +53,10 @@ cover-vanilla-recipe:
   disable-recipe-discovery: true
   # 配方书展示用的材料物品 (类型:ID), 仅作图鉴材料展示
   material: "MATERIAL:CRAFTING_TOKEN"
-  # 配方列表: 每个键是成品的 类型:ID, 值是点击配方书时执行的动作
-  # 动作前缀:
-  #   message: 文本    给玩家发消息 (支持 & 颜色码)
-  #   command: 指令    控制台执行 (%player% 替换为玩家名)
-  #   player: 指令     玩家身份执行 (%player% 替换为玩家名)
-  #   give: 类型:ID    给予一个 MMOItems 物品
-  recipes:
-    "SWORD:CUTLASS":
-      - "message: &a你点亮了 &e利刃 &a配方!"
-      - "give: SWORD:CUTLASS"
-    "BOW:DRAGON_BOW":
-      - "message: &a获得 &e龙弓"
-      - "give: BOW:DRAGON_BOW"
+  # 配方列表: 每项是成品的 类型:ID, 仅在配方书展示
+  recipe:
+    - "SWORD:CUTLASS"
+    - "BOW:DRAGON_BOW"
 
 # ========================================
 # 对话扩展模块 (Chemdah 对话主题)
