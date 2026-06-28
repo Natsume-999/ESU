@@ -6,7 +6,6 @@ author: Natsume
 depend:
   - packetevents
 softdepend:
-  - NeigeItems
   - BetterHud
   - Chemdah
   - MMOCore

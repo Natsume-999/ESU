@@ -17,9 +17,9 @@ import java.util.Collections;
 import java.util.List;
 
 @AutoRegister
-public class ESUCommandModule extends AbstractESUModule implements CommandExecutor, TabCompleter {
+public class CommandModule extends AbstractESUModule implements CommandExecutor, TabCompleter {
 
-    public ESUCommandModule(ESUPlugin plugin) {
+    public CommandModule(ESUPlugin plugin) {
         super(plugin);
         registerCommand("esu", this);
     }

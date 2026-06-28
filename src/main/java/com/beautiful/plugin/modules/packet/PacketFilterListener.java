@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class ESUPacketListener implements PacketListener {
+public class PacketFilterListener implements PacketListener {
 
     private final PacketConfig config;
     private final ESUPlugin plugin;
     private final PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
 
-    public ESUPacketListener(PacketConfig config, ESUPlugin plugin) {
+    public PacketFilterListener(PacketConfig config, ESUPlugin plugin) {
         this.config = config;
         this.plugin = plugin;
     }

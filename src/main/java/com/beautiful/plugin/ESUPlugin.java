@@ -1,6 +1,5 @@
 package com.beautiful.plugin;
 
-import com.beautiful.plugin.bridge.NeigeItemsBridge;
 import top.mrxiaom.pluginbase.BukkitPlugin;
 
 public class ESUPlugin extends BukkitPlugin {
@@ -19,7 +18,6 @@ public class ESUPlugin extends BukkitPlugin {
 
     @Override
     protected void afterEnable() {
-        NeigeItemsBridge.setPlugin(this);
         getLogger().info("ESU 插件已启用！ 版本 " + getDescription().getVersion());
     }
 

@@ -1,7 +1,8 @@
 package com.beautiful.plugin.modules.weaponskill;
 
 import com.beautiful.plugin.ESUPlugin;
-import com.beautiful.plugin.bridge.MMOBridge;
+import com.beautiful.plugin.bridge.MMOCoreBridge;
+import com.beautiful.plugin.bridge.MMOItemsBridge;
 import com.beautiful.plugin.modules.AbstractESUModule;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,6 +16,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.pluginbase.func.AutoRegister;
+import top.mrxiaom.pluginbase.utils.ColorHelper;
 
 import java.util.*;
 
@@ -31,8 +33,16 @@ public class WeaponSkillModule extends AbstractESUModule implements Listener {
     private int maxSkillLevel = 1;
     private boolean clearWhenUnequip = true;
 
+    // 切换提示
+    private boolean messageEnable = true;
+    private boolean messageActionBar = true;     // true=动作栏(物品栏上方)，false=聊天框
+    private String messageEquip = "&a已切换为 &e{weapon} &a技能组";
+    private String messageUnequip = "&7已收起武器技能";
+
     // 武器物品ID -> 槽位技能映射（slot 从 1 起，按配置顺序分配）
     private final Map<String, List<String>> weaponSkills = new HashMap<>();
+    // 武器物品ID -> 显示名（用于提示 {weapon}），缺省用物品ID
+    private final Map<String, String> weaponNames = new HashMap<>();
     // 记录每个玩家当前生效的武器ID，避免重复刷新
     private final Map<UUID, String> activeWeapon = new HashMap<>();
 
@@ -44,6 +54,7 @@ public class WeaponSkillModule extends AbstractESUModule implements Listener {
     @Override
     public void reloadConfig(MemoryConfiguration config) {
         weaponSkills.clear();
+        weaponNames.clear();
         activeWeapon.clear();
 
         enable = config.getBoolean("weapon-skill.enable", false);
@@ -52,18 +63,34 @@ public class WeaponSkillModule extends AbstractESUModule implements Listener {
         maxSkillLevel = config.getInt("weapon-skill.max-skill-level", 1);
         clearWhenUnequip = config.getBoolean("weapon-skill.clear-when-unequip", true);
 
+        messageEnable = config.getBoolean("weapon-skill.message.enable", true);
+        messageActionBar = config.getBoolean("weapon-skill.message.action-bar", true);
+        messageEquip = config.getString("weapon-skill.message.equip", "&a已切换为 &e{weapon} &a技能组");
+        messageUnequip = config.getString("weapon-skill.message.unequip", "&7已收起武器技能");
+
         ConfigurationSection weapons = config.getConfigurationSection("weapon-skill.weapons");
         if (weapons != null) {
-            for (String weaponId : weapons.getKeys(false)) {
-                List<String> skills = weapons.getStringList(weaponId);
-                if (!skills.isEmpty()) {
-                    // 统一大写，匹配 MMOItems 物品 ID 习惯
-                    weaponSkills.put(weaponId.toUpperCase(Locale.ROOT), skills);
+            for (String rawId : weapons.getKeys(false)) {
+                String weaponId = rawId.toUpperCase(Locale.ROOT);
+                // 两种写法：1) 直接是技能列表  2) 带 name + skills 的小节
+                if (weapons.isList(rawId)) {
+                    List<String> skills = weapons.getStringList(rawId);
+                    if (!skills.isEmpty()) {
+                        weaponSkills.put(weaponId, skills);
+                        weaponNames.put(weaponId, rawId);
+                    }
+                } else {
+                    ConfigurationSection sec = weapons.getConfigurationSection(rawId);
+                    if (sec == null) continue;
+                    List<String> skills = sec.getStringList("skills");
+                    if (skills.isEmpty()) continue;
+                    weaponSkills.put(weaponId, skills);
+                    weaponNames.put(weaponId, sec.getString("name", rawId));
                 }
             }
         }
 
-        if (!MMOBridge.isAvailable()) {
+        if (!MMOCoreBridge.isAvailable() || !MMOItemsBridge.isAvailable()) {
             warn("MMOCore/MMOItems API 未就绪，武器技能模块无法工作");
             enable = false;
             return;
@@ -121,9 +148,9 @@ public class WeaponSkillModule extends AbstractESUModule implements Listener {
      * 根据给定物品应用对应武器的技能组。
      */
     private void applyForItem(Player player, ItemStack item) {
-        if (!MMOBridge.hasPlayerData(player)) return;
+        if (!MMOCoreBridge.hasPlayerData(player)) return;
 
-        String weaponId = MMOBridge.getMMOItemId(item);
+        String weaponId = MMOItemsBridge.getItemId(item);
         String key = (weaponId == null) ? null : weaponId.toUpperCase(Locale.ROOT);
         UUID uuid = player.getUniqueId();
         String current = activeWeapon.get(uuid);
@@ -133,6 +160,7 @@ public class WeaponSkillModule extends AbstractESUModule implements Listener {
             if (key.equals(current)) return; // 已是该武器，跳过
             bindWeaponSkills(player, weaponSkills.get(key));
             activeWeapon.put(uuid, key);
+            sendMessage(player, messageEquip, weaponNames.getOrDefault(key, key));
             return;
         }
 
@@ -143,6 +171,21 @@ public class WeaponSkillModule extends AbstractESUModule implements Listener {
                 clearWeaponSkills(player, weaponSkills.get(current));
             }
             activeWeapon.remove(uuid);
+            sendMessage(player, messageUnequip, weaponNames.getOrDefault(current, current));
+        }
+    }
+
+    /** 发送切换提示（动作栏或聊天框）。 */
+    private void sendMessage(Player player, String template, String weaponName) {
+        if (!messageEnable || template == null || template.isEmpty()) return;
+        String text = template.replace("{weapon}", weaponName == null ? "" : weaponName);
+        if (messageActionBar) {
+            player.spigot().sendMessage(
+                    net.md_5.bungee.api.ChatMessageType.ACTION_BAR,
+                    net.md_5.bungee.api.chat.TextComponent.fromLegacyText(
+                            ColorHelper.parseColor(text)));
+        } else {
+            ColorHelper.parseAndSend(player, text);
         }
     }
 
@@ -153,7 +196,7 @@ public class WeaponSkillModule extends AbstractESUModule implements Listener {
         // 先清空将要使用的槽位范围，避免残留
         int slot = 1;
         for (String skillId : skills) {
-            MMOBridge.bindSkill(player, slot, skillId, maxSkillLevel);
+            MMOCoreBridge.bindSkill(player, slot, skillId, maxSkillLevel);
             slot++;
         }
     }
@@ -164,7 +207,7 @@ public class WeaponSkillModule extends AbstractESUModule implements Listener {
     private void clearWeaponSkills(Player player, List<String> skills) {
         if (skills == null) return;
         for (int slot = 1; slot <= skills.size(); slot++) {
-            MMOBridge.unbindSkill(player, slot);
+            MMOCoreBridge.unbindSkill(player, slot);
         }
     }
 }

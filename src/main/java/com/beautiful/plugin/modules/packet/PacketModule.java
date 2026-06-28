@@ -28,7 +28,7 @@ public class PacketModule extends AbstractESUModule {
                 config.getString("handle-network-listener.chat-replay-popup", "")
         );
         listener = PacketEvents.getAPI().getEventManager().registerListener(
-                new ESUPacketListener(packetConfig, plugin), PacketListenerPriority.LOW
+                new PacketFilterListener(packetConfig, plugin), PacketListenerPriority.LOW
         );
     }
 
