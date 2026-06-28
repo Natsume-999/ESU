@@ -1,0 +1,232 @@
+/* 界限 玩家 Wiki —— 深色奇幻 RPG 风格配色 */
+
+/* 品牌主色：琥珀金 + 暗色背景 */
+:root {
+  --vp-c-brand-1: #d4a24e;
+  --vp-c-brand-2: #e0b665;
+  --vp-c-brand-3: #c08d3a;
+  --vp-c-brand-soft: rgba(212, 162, 78, 0.16);
+
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-alt: #f7f3ec;
+  --vp-c-bg-soft: #f4efe6;
+}
+
+/* 暗色模式：深夜奇幻 */
+.dark {
+  --vp-c-bg: #14110d;
+  --vp-c-bg-alt: #1b1712;
+  --vp-c-bg-soft: #201b15;
+  --vp-c-brand-1: #e0b665;
+  --vp-c-brand-2: #eccb86;
+  --vp-c-brand-3: #c89a48;
+}
+
+/* 首页英雄区使用的渐变与排版 */
+.rpg-hero {
+  position: relative;
+  padding: 96px 24px 80px;
+  text-align: center;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(212, 162, 78, 0.18), transparent 60%),
+    linear-gradient(180deg, var(--vp-c-bg-alt), var(--vp-c-bg));
+  border-bottom: 1px solid rgba(212, 162, 78, 0.2);
+}
+
+.rpg-hero__title {
+  font-size: clamp(48px, 9vw, 104px);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.05;
+  margin: 0;
+  background: linear-gradient(180deg, #f0d49a, #d4a24e 60%, #a9762a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 30px rgba(212, 162, 78, 0.25);
+}
+
+.rpg-hero__subtitle {
+  margin: 18px auto 0;
+  max-width: 640px;
+  font-size: clamp(16px, 2.4vw, 22px);
+  color: var(--vp-c-text-2);
+  letter-spacing: 0.04em;
+}
+
+.rpg-hero__tagline {
+  margin-top: 8px;
+  font-size: 14px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--vp-c-brand-1);
+  opacity: 0.8;
+}
+
+.rpg-hero__actions {
+  margin-top: 40px;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.rpg-btn {
+  display: inline-block;
+  padding: 13px 30px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+}
+
+.rpg-btn--primary {
+  color: #1a140a;
+  background: linear-gradient(180deg, #e7c074, #d4a24e);
+  box-shadow: 0 6px 20px rgba(212, 162, 78, 0.35);
+}
+
+.rpg-btn--ghost {
+  color: var(--vp-c-brand-1);
+  border: 1px solid rgba(212, 162, 78, 0.5);
+}
+
+.rpg-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* 通用区块容器 */
+.rpg-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 64px 24px;
+}
+
+.rpg-section__title {
+  text-align: center;
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 800;
+  margin: 0 0 8px;
+  color: var(--vp-c-text-1);
+}
+
+.rpg-section__desc {
+  text-align: center;
+  color: var(--vp-c-text-2);
+  margin: 0 auto 44px;
+  max-width: 600px;
+}
+
+/* 特色卡片网格 */
+.rpg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.rpg-card {
+  padding: 28px 24px;
+  border-radius: 14px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid rgba(212, 162, 78, 0.18);
+  transition: transform 0.18s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rpg-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(212, 162, 78, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.rpg-card__icon {
+  font-size: 34px;
+  margin-bottom: 14px;
+}
+
+.rpg-card__title {
+  font-size: 19px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: var(--vp-c-brand-1);
+}
+
+.rpg-card__text {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--vp-c-text-2);
+  margin: 0;
+}
+
+/* 流派展示：带定位标签 */
+.rpg-class {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 12px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid rgba(212, 162, 78, 0.15);
+}
+
+.rpg-class__icon {
+  font-size: 30px;
+  flex-shrink: 0;
+}
+
+.rpg-class__name {
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+}
+
+.rpg-class__role {
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
+
+/* 区块交替背景 */
+.rpg-section--alt {
+  background: var(--vp-c-bg-alt);
+  max-width: none;
+}
+
+.rpg-section--alt > .rpg-section__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* 底部 CTA 横幅 */
+.rpg-cta {
+  text-align: center;
+  padding: 72px 24px;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(212, 162, 78, 0.16), transparent 60%),
+    var(--vp-c-bg-alt);
+  border-top: 1px solid rgba(212, 162, 78, 0.2);
+}
+
+.rpg-cta__title {
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 800;
+  margin: 0 0 24px;
+  color: var(--vp-c-text-1);
+}
+
+/* page 布局下让自定义首页全宽（去掉默认容器的边距与宽度限制） */
+.VPPage .container:has(.rpg-hero),
+.VPPage:has(.rpg-hero) .container {
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+.VPPage:has(.rpg-hero) {
+  margin: 0 !important;
+}
+
+/* 响应式：小屏卡片间距收紧 */
+@media (max-width: 640px) {
+  .rpg-section { padding: 48px 18px; }
+  .rpg-hero { padding: 72px 18px 56px; }
+}
