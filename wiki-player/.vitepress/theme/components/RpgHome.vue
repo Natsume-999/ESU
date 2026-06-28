@@ -2,7 +2,17 @@
 // 界限 玩家 Wiki 首页 —— 游戏官网风格
 // 双语：根据当前 locale（lang）切换繁简文案
 import { useData, withBase } from 'vitepress'
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
+
+// ============================================================
+// 配置区：把下面的值改成你的真实信息即可
+// ============================================================
+const SERVER_IP = 'minecraft.natsume.net'   // 服务器 IP（Java 版）
+const DISCORD_URL = 'https://discord.gg/xxxx'  // ← 换成真实 Discord 邀请链接
+const YOUTUBE_URL = 'https://aaa'              // ← 换成真实 YouTube 链接
+const SHOP_URL = 'https://shop.example.com'    // ← 换成真实商店链接
+const WEBSITE_URL = 'https://ardonia.xyz'      // ← 换成真实官网链接
+// ============================================================
 
 const { lang } = useData()
 
@@ -49,6 +59,35 @@ const classes = computed(() => [
   { icon: '🗡️', name: t('刺客', '刺客'), role: t('機動暗殺 · 背刺斬殺', '机动暗杀 · 背刺斩杀') },
   { icon: '👊', name: t('武者', '武者'), role: t('徒手格鬥 · 連段機動', '徒手格斗 · 连段机动') }
 ])
+
+// ---- 实时服务器状态（mcsrvstat.us 公开 API）----
+const status = ref({ loading: true, online: false, players: 0, max: 0 })
+
+onMounted(async () => {
+  try {
+    const res = await fetch(`https://api.mcsrvstat.us/3/${SERVER_IP}`)
+    const data = await res.json()
+    status.value = {
+      loading: false,
+      online: !!data.online,
+      players: data.players?.online ?? 0,
+      max: data.players?.max ?? 0
+    }
+  } catch (e) {
+    status.value = { loading: false, online: false, players: 0, max: 0 }
+  }
+})
+
+// ---- 复制服务器 IP ----
+const copied = ref(false)
+function copyIP() {
+  navigator.clipboard?.writeText(SERVER_IP).then(() => {
+    copied.value = true
+    setTimeout(() => (copied.value = false), 1800)
+  })
+}
+
+const config = { DISCORD_URL, YOUTUBE_URL, SHOP_URL, WEBSITE_URL, SERVER_IP }
 </script>
 
 <template>
@@ -101,6 +140,60 @@ const classes = computed(() => [
             <span class="rpg-class__name">{{ c.name }}</span><br />
             <span class="rpg-class__role">{{ c.role }}</span>
           </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 加入我们：服务器 IP + 实时在线人数 -->
+  <section class="rpg-join">
+    <h2 class="rpg-section__title">{{ t('立即加入', '立即加入') }}</h2>
+    <p class="rpg-section__desc">
+      {{ t('Java 版 · 複製 IP 即可進入', 'Java 版 · 复制 IP 即可进入') }}
+    </p>
+
+    <div class="rpg-ip" @click="copyIP">
+      <span class="rpg-ip__addr">{{ config.SERVER_IP }}</span>
+      <button class="rpg-ip__copy">
+        {{ copied ? t('已複製 ✓', '已复制 ✓') : t('複製', '复制') }}
+      </button>
+    </div>
+
+    <div class="rpg-status">
+      <span class="rpg-status__dot" :class="{ on: status.online }"></span>
+      <template v-if="status.loading">{{ t('查詢中…', '查询中…') }}</template>
+      <template v-else-if="status.online">
+        {{ t('線上', '在线') }} ·
+        <strong>{{ status.players }}</strong> / {{ status.max }}
+        {{ t('名玩家', '名玩家') }}
+      </template>
+      <template v-else>{{ t('伺服器離線', '服务器离线') }}</template>
+    </div>
+  </section>
+
+  <!-- 社区：YouTube / Discord / 商店 / 官网 -->
+  <section class="rpg-section--alt">
+    <div class="rpg-section__inner rpg-section">
+      <h2 class="rpg-section__title">{{ t('加入社群', '加入社区') }}</h2>
+      <p class="rpg-section__desc">
+        {{ t('關注我們，獲取最新動態與福利。', '关注我们，获取最新动态与福利。') }}
+      </p>
+      <div class="rpg-social">
+        <a class="rpg-social__btn yt" :href="config.YOUTUBE_URL" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z"/></svg>
+          <span>YouTube</span>
+        </a>
+        <a class="rpg-social__btn dc" :href="config.DISCORD_URL" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.3.5a14.6 14.6 0 0 0-6.3 0L8.6 3a19.8 19.8 0 0 0-4.9 1.4C.6 9 0 13.4.3 17.8a19.9 19.9 0 0 0 6 3l.7-1.1c-.7-.3-1.4-.6-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l.7 1.1a19.9 19.9 0 0 0 6-3c.4-5.1-.6-9.5-2.5-13.4zM8.4 15.3c-1.2 0-2.1-1.1-2.1-2.4S7.2 10.5 8.4 10.5s2.2 1.1 2.1 2.4-.9 2.4-2.1 2.4zm7.2 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.2 1.1 2.1 2.4-.9 2.4-2.1 2.4z"/></svg>
+          <span>Discord</span>
+        </a>
+        <a class="rpg-social__btn shop" :href="config.SHOP_URL" target="_blank" rel="noopener">
+          <span class="rpg-social__emoji">🛒</span>
+          <span>{{ t('商店', '商店') }}</span>
+        </a>
+        <a class="rpg-social__btn web" :href="config.WEBSITE_URL" target="_blank" rel="noopener">
+          <span class="rpg-social__emoji">🌐</span>
+          <span>{{ t('官網', '官网') }}</span>
         </a>
       </div>
     </div>
