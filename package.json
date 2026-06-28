@@ -1,7 +1,7 @@
 {
   "name": "esu-wiki",
   "version": "1.0.0",
-  "description": "ESU RPG 服务器双 Wiki（玩家版 + 策划版），支持简繁中文",
+  "description": "界限 RPG 服务器双 Wiki（玩家版 + 策划版），繁体默认 + 简体，自动转换",
   "type": "module",
   "scripts": {
     "convert": "node scripts/convert-tw.mjs",

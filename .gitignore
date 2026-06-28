@@ -13,6 +13,19 @@ wiki-player/.vitepress/dist
 wiki-player/.vitepress/cache
 wiki-planning/.vitepress/dist
 wiki-planning/.vitepress/cache
-# 繁体自动生成，不入 git（由 npm run convert 生成）
-wiki-player/zh-tw
-wiki-planning/zh-tw
+# 多语言自动生成，不入 git（源在 _content/，由 npm run convert 生成）
+# 玩家站生成物（繁体在根，简体在 zh-hans）
+wiki-player/zh-hans
+wiki-player/index.md
+wiki-player/start
+wiki-player/play
+wiki-player/combat
+wiki-player/advanced
+# 策划站生成物
+wiki-planning/zh-hans
+wiki-planning/index.md
+wiki-planning/overview
+wiki-planning/gameplay
+wiki-planning/systems
+wiki-planning/combat
+wiki-planning/balance
