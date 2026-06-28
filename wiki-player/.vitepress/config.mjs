@@ -73,7 +73,8 @@ export default defineConfig({
   lang: 'zh-Hans',
   lastUpdated: true,
   cleanUrls: true,
-  base: '/',
+  // 部署在 GitHub Pages 子路径 natsume-999.github.io/ESU/
+  base: '/ESU/',
 
   head: [['meta', { name: 'theme-color', content: '#3c8772' }]],
 
