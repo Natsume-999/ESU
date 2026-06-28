@@ -1,0 +1,19 @@
+name: ESU
+version: '${version}'
+main: com.beautiful.plugin.ESUPlugin
+api-version: '1.21'
+author: Natsume
+depend:
+  - packetevents
+softdepend:
+  - NeigeItems
+  - BetterHud
+  - Chemdah
+commands:
+  esu:
+    description: ESU 命令
+    usage: /esu [reload]
+    permission: esu.admin
+permissions:
+  esu.admin:
+    default: op

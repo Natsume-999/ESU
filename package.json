@@ -1,0 +1,19 @@
+{
+  "name": "esu-wiki",
+  "version": "1.0.0",
+  "description": "ESU RPG 服务器双 Wiki（玩家版 + 策划版），支持简繁中文",
+  "type": "module",
+  "scripts": {
+    "convert": "node scripts/convert-tw.mjs",
+    "player:dev": "npm run convert && vitepress dev wiki-player",
+    "player:build": "npm run convert && vitepress build wiki-player",
+    "player:preview": "vitepress preview wiki-player",
+    "planning:dev": "npm run convert && vitepress dev wiki-planning",
+    "planning:build": "npm run convert && vitepress build wiki-planning",
+    "planning:preview": "vitepress preview wiki-planning"
+  },
+  "devDependencies": {
+    "opencc-js": "^1.0.5",
+    "vitepress": "^1.6.3"
+  }
+}

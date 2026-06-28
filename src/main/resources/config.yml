@@ -1,0 +1,138 @@
+# ========================================
+# ESU 插件配置
+# ========================================
+version: ${version}
+
+# ========================================
+# 世界规则模块
+# 对指定世界或所有世界应用 gamerule 规则
+# 规则名使用 kebab-case 格式 (如 keep-inventory → keep_inventory)
+# "*" 表示对所有世界生效
+# ========================================
+allow-world-gamerule:
+  # 模块开关
+  enable: true
+  worlds:
+    # "*" = 所有世界
+    "*":
+      # 是否保留死亡玩家背包 (对应 keep_inventory 规则)
+      keep-inventory: true
+    # 指定单个世界
+    "world":
+      keep-inventory: true
+
+# ========================================
+# 网络包拦截模块
+# 拦截服务端发送的网络包
+# ========================================
+handle-network-listener:
+  # 模块开关
+  enable: true
+  # 伤害粒子拦截
+  damage-indicator: true
+  # 匹配的系统聊天内容 (拦截后取消消息)
+  chat-network-content:
+    - "命令"
+  # 匹配后转发的 BetterHud 弹窗名称 (留空则不转发)
+  chat-replay-popup: "entity_health_popup"
+
+# ========================================
+# 配方管理模块
+# 清除原版配方并注册 NeigeItems 自定义配方
+# 配方仅用于配方书展示与点击触发动作，不可实际合成
+# 配方命名空间: esu:物品id (全小写)
+# ========================================
+cover-vanilla-recipe:
+  # 模块开关
+  enable: true
+  # 是否删除原版配方
+  clear-vanilla-recipe: true
+  # 是否禁止原版配方解锁弹窗
+  disable-recipe-discovery: true
+  # 配方列表所需的材料 (NeigeItems 物品 ID，不允许中文)
+  material: "ExamplePickaxe"
+  # 注册配方列表 (NeigeItems 物品 ID，不允许中文)
+  # 点击配方书中的配方将执行该物品的 recipe.action
+  recipe:
+    - "ExampleItem"
+
+# ========================================
+# 对话扩展模块 (Chemdah 对话主题)
+# 玩家开始 Chemdah 对话时隐藏 HUD 并显示对话主题
+# 依赖: BetterHud + Chemdah + PlaceholderAPI
+# ========================================
+type-writer:
+  # 模块开关
+  enable: true
+  # 对话时隐藏的 HUD 列表 (留空则无隐藏)
+  hide:
+    - "default_hud"
+  theme:
+    # 对话 HUD 名称
+    name: "theme_hud"
+    # 动画播放速度 (值越低越快)
+    speed: 1
+    # 对话音效配置
+    play-sound:
+      # 音效名称
+      name: ENTITY_EXPERIENCE_ORB_PICKUP
+      # 音调
+      pitch: 2
+      # 音量
+      volume: 0
+    # 对话结束延迟 (20 tick = 1秒)
+    delay: 20
+    # 玩家移动多少格就结束对话
+    distance: 2
+    # 一次最多展示的回复数量 (0=上一页, 6=下一页)
+    size: 4
+    # 文本格式
+    format:
+      # 标题格式
+      title: "{title}"
+      # 回复文本格式
+      reply:
+        # 选中状态
+        select: "<white>{player_side}"
+        # 未选中状态
+        default: "<gray>{player_side}"
+
+# ========================================
+# 受伤血屏效果模块
+# 通过 WorldBorder 实现血屏效果，完全自包含
+# 原理：缩小 WorldBorder 到极小尺寸，利用边界警告颜色显示红色血屏
+# 血量越低，WorldBorder 越小，红色越明显
+# ========================================
+hurt-vision:
+  # 模块开关
+  enable: true
+  # 淡出效果
+  fade:
+    # 是否启用淡出
+    enabled: true
+    # 淡出时间 (秒)
+    time: 5
+  # 伤害强度倍率 (值越大血屏越红越明显)
+  intensity-modifier: 2
+  # 触发血屏的最低生命值 (-1 受到伤害立即显示)
+  minimum-health: -1
+  # 伤害模式开关
+  damage-mode: true
+
+# ========================================
+# 自动播报公告模块
+# ========================================
+auto-broadcast:
+  # 模块开关
+  enable: true
+  # 播放类型 ( random 为随机播报，而 iteration 为依次播报)
+  type: random
+  # 播报间隔 (秒)
+  every: 30
+  # 公告内容 (支持 PlaceholderAPI 变量)
+  broadcast:
+    "测试内容":
+      - "今日为 %server_time% 所在 %player_world% 世界 (ESU)"
+    "测试内容2":
+      - "Hello World (ESU)"
+
