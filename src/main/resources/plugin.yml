@@ -9,6 +9,8 @@ softdepend:
   - NeigeItems
   - BetterHud
   - Chemdah
+  - MMOCore
+  - MMOItems
 commands:
   esu:
     description: ESU 命令

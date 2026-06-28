@@ -136,3 +136,44 @@ auto-broadcast:
     "测试内容2":
       - "Hello World (ESU)"
 
+# ========================================
+# 武器技能模块 (武器即职业)
+# 手持的 MMOItems 武器决定 MMOCore 技能栏绑定的技能，换武器即换技能组。
+# 技能释放仍走 MMOCore 原生按键 (技能栏施法)。
+# 依赖: MMOCore + MMOItems
+#
+# 【重要前提】绑定能生效需满足:
+#   1. 玩家已有 MMOCore 职业 (可以是一个通用默认职业)
+#   2. 该职业在 MMOCore 配置里定义了足够数量的技能槽位 (skill-slots)
+#      例如配置里某武器给 3 个技能, 职业就需要至少 3 个 skill slot
+#   3. 技能为可释放的主动技能 (永久被动 isPermanent 的技能会被 MMOCore 拒绝绑定)
+#
+# 配置说明:
+#   weapons 下每个键是 MMOItems 物品 ID (大小写不敏感, 建议大写),
+#   值为技能 ID 列表, 按顺序绑定到技能槽 1, 2, 3...
+#   技能 ID 为 MMOCore 已注册的技能 (skill 文件夹里的技能), 不限职业。
+# ========================================
+weapon-skill:
+  # 模块开关
+  enable: false
+  # 绑定技能时使用的技能最大等级 (一般填 1; 若技能可升级可调高)
+  max-skill-level: 3
+  # 切换到非配置武器/空手时, 是否清空之前武器的技能绑定
+  clear-when-unequip: true
+  # 武器 -> 技能 映射
+  weapons:
+    # 示例: 物品 ID 为 CUTLASS 的剑, 绑定三个技能到技能槽 1/2/3
+    CUTLASS:
+      - WHIRLWIND
+      - DASH
+      - HEALING
+    # 示例: 物品 ID 为 DRAGON_BOW 的弓
+    DRAGON_BOW:
+      - PIERCING_ARROW
+      - ARROW_RAIN
+    # 示例: 物品 ID 为 FIRE_STAFF 的法杖
+    FIRE_STAFF:
+      - FIREBALL
+      - FIRE_NOVA
+      - METEOR
+
